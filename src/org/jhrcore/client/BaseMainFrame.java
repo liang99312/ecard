@@ -91,6 +91,8 @@ import org.jhrcore.client.ecard.EcardDataPlugin;
 import org.jhrcore.client.ecard.EcardHkPlugin;
 import org.jhrcore.client.ecard.EcardLeavePlugin;
 import org.jhrcore.client.ecard.EcardMngPlugin;
+import org.jhrcore.client.ecard.EcardParamPlugin;
+import org.jhrcore.client.ecard.EcardPlanPlugin;
 import org.jhrcore.client.ecard.EcardPosPlugin;
 import org.jhrcore.client.ecard.EcardXfPlugin;
 import org.jhrcore.client.system.SysNoticePlugIn;
@@ -201,13 +203,12 @@ public class BaseMainFrame extends javax.swing.JFrame implements IModuleCode {
         addModule(MyReportPlugin.class, "常用报表");
         
         //-----------ecard-----------
-        addModule(EcardLeavePlugin.class,"假日设置");
-        addModule(EcardPosPlugin.class,"Pos机设置");
-        addModule(EcardMngPlugin.class,"基本信息");
-        addModule(EcardHkPlugin.class,"汇款明细");
-        addModule(EcardXfPlugin.class,"消费明细");
-        addModule(EcardDataPlugin.class,"数据查询");
-//        addModule(EcardHkHzPlugin.class,"汇款汇总");
+  addModule(EcardParamPlugin.class, "参数设置");
+addModule(EcardLeavePlugin.class, "假日设置");
+ addModule(EcardPosPlugin.class, "Pos机设置");
+addModule(EcardMngPlugin.class, "基本信息");
+ addModule(EcardPlanPlugin.class, "养卡计划");
+addModule(EcardDataPlugin.class, "数据汇总");
         
         //----------------查询中心----------------------
         //addModule(QueryMngPlugin.class, "Query");

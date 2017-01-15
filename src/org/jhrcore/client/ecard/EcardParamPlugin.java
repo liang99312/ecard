@@ -9,7 +9,7 @@
 /*    */ 
 /*    */ 
 /*    */ 
-/*    */ public class EcardMngPlugin
+/*    */ public class EcardParamPlugin
 /*    */   extends CommTask
 /*    */ {
 /*    */   public String getGroupCode()
@@ -19,7 +19,7 @@
 /*    */   
 /*    */   public Class getModuleClass()
 /*    */   {
-/* 22 */     return EcardMngPanel.class;
+/* 22 */     return EcardParamPanel.class;
 /*    */   }
 /*    */   
 /*    */   public Object getClassName()
@@ -29,7 +29,7 @@
 /*    */ }
 
 
-/* Location:              E:\cspros\weifu\ecard_backup\hrserver\hrclient.jar!\org\jhrcore\client\ecard\EcardMngPlugin.class
+/* Location:              E:\cspros\weifu\ecard_backup\hrserver\hrclient.jar!\org\jhrcore\client\ecard\EcardParamPlugin.class
  * Java compiler version: 6 (50.0)
  * JD-Core Version:       0.7.1
  */

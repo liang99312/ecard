@@ -1,166 +1,157 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.jhrcore.client.ecard.ui;
+/*     */ package org.jhrcore.client.ecard.ui;
+/*     */ 
+/*     */ import com.fr.view.core.DateUtil;
+/*     */ import java.awt.BorderLayout;
+/*     */ import java.awt.event.ActionEvent;
+/*     */ import java.awt.event.ActionListener;
+/*     */ import javax.swing.GroupLayout;
+/*     */ import javax.swing.GroupLayout.Alignment;
+/*     */ import javax.swing.GroupLayout.ParallelGroup;
+/*     */ import javax.swing.GroupLayout.SequentialGroup;
+/*     */ import javax.swing.JButton;
+/*     */ import javax.swing.JOptionPane;
+/*     */ import javax.swing.JPanel;
+/*     */ import javax.swing.JScrollPane;
+/*     */ import javax.swing.JToolBar;
+import javax.swing.LayoutStyle;
+/*     */ import javax.swing.LayoutStyle.ComponentPlacement;
+/*     */ import org.jhrcore.client.CommUtil;
+/*     */ import org.jhrcore.entity.ecard.Ecard_chu;
+/*     */ import org.jhrcore.entity.ecard.Epos;
+/*     */ import org.jhrcore.entity.salary.ValidateSQLResult;
+/*     */ import org.jhrcore.msg.CommMsg;
+/*     */ import org.jhrcore.ui.BeanPanel;
+/*     */ import org.jhrcore.ui.ContextManager;
+/*     */ import org.jhrcore.ui.ModelFrame;
+/*     */ import org.jhrcore.util.MsgUtil;
+/*     */ import org.jhrcore.util.SysUtil;
+/*     */ 
+/*     */ public class EditChuPanel
+/*     */   extends JPanel
+/*     */ {
+/*  31 */   private BeanPanel beanPanel = new BeanPanel();
+/*     */   private Object curObj;
+/*     */   private EposSelectDlg dlg;
+/*     */   private JPanel bPanel;
+/*     */   
+/*  36 */   public EditChuPanel() { initComponents();
+/*  37 */     initOthers();
+/*  38 */     setupEvents();
+/*     */   }
+/*     */   
+/*     */   public EditChuPanel(Object obj) {
+/*  42 */     initComponents();
+/*  43 */     this.curObj = obj;
+/*  44 */     initOthers();
+/*  45 */     setupEvents();
+/*     */   }
+/*     */   
+/*     */   private void initOthers() {
+/*  49 */     this.bPanel.add(new JScrollPane(this.beanPanel), "Center");
+/*  50 */     this.beanPanel.setBean(this.curObj);
+/*  51 */     this.beanPanel.setEditable(true);
+/*  52 */     this.beanPanel.bind();
+/*     */   }
+/*     */   
+/*     */   private void setupEvents()
+/*     */   {
+/*  57 */     this.btnFl.addActionListener(new ActionListener()
+/*     */     {
+/*     */       public void actionPerformed(ActionEvent e)
+/*     */       {
+/*  61 */         if (EditChuPanel.this.dlg == null) {
+/*  62 */           EditChuPanel.this.dlg = new EposSelectDlg();
+/*     */         }
+/*  64 */         EditChuPanel.this.dlg.setIsOk();
+/*  65 */         EditChuPanel.this.dlg.setTitle("选择Pos机");
+/*  66 */         ContextManager.locateOnMainScreenCenter(EditChuPanel.this.dlg);
+/*  67 */         EditChuPanel.this.dlg.setVisible(true);
+/*  68 */         if ((EditChuPanel.this.dlg.isOk()) && 
+/*  69 */           (EditChuPanel.this.dlg.getSelectObject() != null)) {
+/*  70 */           Epos tempPos = EditChuPanel.this.dlg.getSelectObject();
+/*  71 */           Ecard_chu chu = (Ecard_chu)EditChuPanel.this.curObj;
+/*  72 */           boolean existFlag = CommUtil.exists("select 1 from Ecard_leave where ecard_leave_flag='holiday' and ecard_leave_date='" + DateUtil.DateToStr(chu.getChu_date()) + "'");
+/*  73 */           if (existFlag) {
+/*  74 */             float fl = (float)(0.002D + Float.valueOf(tempPos.getEpos_fei()).floatValue());
+/*  75 */             chu.setChu_fl("" + SysUtil.round(fl, 4));
+/*     */           } else {
+/*  77 */             chu.setChu_fl(tempPos.getEpos_fei());
+/*     */           }
+/*     */           
+/*  80 */           chu.setChu_item(tempPos.getEpos_item());
+/*  81 */           chu.setEpos_code(tempPos.getEpos_code());
+/*  82 */           chu.setEpos_name(tempPos.getEpos_name());
+/*  83 */           EditChuPanel.this.beanPanel.bind();
+/*     */         }
+/*     */         
+/*     */       }
+/*  87 */     });
+/*  88 */     this.btnSave.addActionListener(new ActionListener()
+/*     */     {
+/*     */       public void actionPerformed(ActionEvent e)
+/*     */       {
+/*  92 */         ValidateSQLResult result = CommUtil.updateEntity(EditChuPanel.this.beanPanel.getBean());
+/*  93 */         if (result.getResult() == 0) {
+/*  94 */           MsgUtil.showInfoMsg(CommMsg.SAVESUCCESS_MESSAGE);
+/*  95 */           ModelFrame.close((ModelFrame)JOptionPane.getFrameForComponent(EditChuPanel.this.btnClose));
+/*     */         } else {
+/*  97 */           MsgUtil.showHRSaveErrorMsg(result);
+/*     */         }
+/*     */       }
+/* 100 */     });
+/* 101 */     this.btnClose.addActionListener(new ActionListener()
+/*     */     {
+/*     */       public void actionPerformed(ActionEvent e)
+/*     */       {
+/* 105 */         ModelFrame.close((ModelFrame)JOptionPane.getFrameForComponent(EditChuPanel.this.btnClose));
+/*     */       }
+/*     */     });
+/*     */   }
+/*     */   
+/*     */ 
+/*     */   private JButton btnClose;
+/*     */   
+/*     */   private JButton btnFl;
+/*     */   
+/*     */   private JButton btnSave;
+/*     */   private JToolBar jToolBar1;
+/*     */   private void initComponents()
+/*     */   {
+/* 119 */     this.bPanel = new JPanel();
+/* 120 */     this.btnSave = new JButton();
+/* 121 */     this.btnClose = new JButton();
+/* 122 */     this.jToolBar1 = new JToolBar();
+/* 123 */     this.btnFl = new JButton();
+/*     */     
+/* 125 */     this.bPanel.setLayout(new BorderLayout());
+/*     */     
+/* 127 */     this.btnSave.setText("保存");
+/*     */     
+/* 129 */     this.btnClose.setText("关闭");
+/*     */     
+/* 131 */     this.jToolBar1.setFloatable(false);
+/* 132 */     this.jToolBar1.setRollover(true);
+/*     */     
+/* 134 */     this.btnFl.setText("设置费率");
+/* 135 */     this.btnFl.setFocusable(false);
+/* 136 */     this.btnFl.setHorizontalTextPosition(0);
+/* 137 */     this.btnFl.setVerticalTextPosition(3);
+/* 138 */     this.jToolBar1.add(this.btnFl);
+/*     */     
+/* 140 */     GroupLayout layout = new GroupLayout(this);
+/* 141 */     setLayout(layout);
+/* 142 */     layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(this.bPanel, -1, -1, 32767).addGroup(layout.createSequentialGroup().addContainerGap(213, 32767).addComponent(this.btnSave).addGap(33, 33, 33).addComponent(this.btnClose).addGap(67, 67, 67)).addComponent(this.jToolBar1, -1, -1, 32767));
+/*     */     
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ 
+/* 153 */     layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addComponent(this.jToolBar1, -2, 25, -2).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(this.bPanel, -1, 259, 32767).addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(this.btnSave).addComponent(this.btnClose)).addContainerGap()));
+/*     */   }
+/*     */ }
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import org.jhrcore.client.CommUtil;
-import org.jhrcore.entity.ecard.Ecard_chu;
-import org.jhrcore.entity.ecard.Epos;
-import org.jhrcore.entity.salary.ValidateSQLResult;
-import org.jhrcore.msg.CommMsg;
-import org.jhrcore.ui.BeanPanel;
-import org.jhrcore.ui.ContextManager;
-import org.jhrcore.ui.ModelFrame;
-import org.jhrcore.util.MsgUtil;
-
-/**
- *
- * @author Administrator
- */
-public class EditChuPanel extends javax.swing.JPanel {
-
-    private BeanPanel beanPanel = new BeanPanel();
-    private Object curObj;
-    private EposSelectDlg dlg;
-
-    public EditChuPanel() {
-        initComponents();
-        initOthers();
-        setupEvents();
-    }
-    
-    public EditChuPanel(Object obj) {
-        initComponents();
-        this.curObj = obj;
-        initOthers();
-        setupEvents();
-    }
-
-    private void initOthers() {
-        bPanel.add(new JScrollPane(beanPanel), BorderLayout.CENTER);
-        beanPanel.setBean(curObj);
-        beanPanel.setEditable(true);
-        beanPanel.bind();
-        
-    }
-
-    private void setupEvents() {
-        btnFl.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(dlg == null){
-                    dlg = new EposSelectDlg();
-                }
-                dlg.setIsOk();
-                dlg.setTitle("选择Pos机");
-                ContextManager.locateOnMainScreenCenter(dlg);
-                dlg.setVisible(true);
-                if(dlg.isOk()){
-                    if(dlg.getSelectObject() != null){
-                        Epos tempPos = dlg.getSelectObject();
-                        Ecard_chu chu = (Ecard_chu) curObj;
-                        chu.setChu_fl(tempPos.getEpos_fei());
-                        chu.setChu_item(tempPos.getEpos_item());
-                        chu.setEpos_code(tempPos.getEpos_code());
-                        chu.setEpos_name(tempPos.getEpos_name());
-                        beanPanel.bind();
-                    }
-                }
-            }
-        });
-        btnSave.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ValidateSQLResult result = CommUtil.updateEntity(beanPanel.getBean());
-                if (result.getResult() == 0) {
-                    MsgUtil.showInfoMsg(CommMsg.SAVESUCCESS_MESSAGE);
-                    ModelFrame.close((ModelFrame) JOptionPane.getFrameForComponent(btnClose));
-                } else {
-                    MsgUtil.showHRSaveErrorMsg(result);
-                }
-            }
-        });
-        btnClose.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ModelFrame.close((ModelFrame) JOptionPane.getFrameForComponent(btnClose));
-            }
-        });
-    }
-
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-
-        bPanel = new javax.swing.JPanel();
-        btnSave = new javax.swing.JButton();
-        btnClose = new javax.swing.JButton();
-        jToolBar1 = new javax.swing.JToolBar();
-        btnFl = new javax.swing.JButton();
-
-        bPanel.setLayout(new java.awt.BorderLayout());
-
-        btnSave.setText("保存");
-
-        btnClose.setText("关闭");
-
-        jToolBar1.setFloatable(false);
-        jToolBar1.setRollover(true);
-
-        btnFl.setText("设置费率");
-        btnFl.setFocusable(false);
-        btnFl.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnFl.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(btnFl);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(bPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(213, Short.MAX_VALUE)
-                .addComponent(btnSave)
-                .addGap(33, 33, 33)
-                .addComponent(btnClose)
-                .addGap(67, 67, 67))
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSave)
-                    .addComponent(btnClose))
-                .addContainerGap())
-        );
-    }// </editor-fold>//GEN-END:initComponents
-
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel bPanel;
-    private javax.swing.JButton btnClose;
-    private javax.swing.JButton btnFl;
-    private javax.swing.JButton btnSave;
-    private javax.swing.JToolBar jToolBar1;
-    // End of variables declaration//GEN-END:variables
-}

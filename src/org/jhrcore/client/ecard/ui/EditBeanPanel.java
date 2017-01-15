@@ -1,123 +1,108 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.jhrcore.client.ecard.ui;
+/*     */ package org.jhrcore.client.ecard.ui;
+/*     */ 
+/*     */ import java.awt.BorderLayout;
+/*     */ import java.awt.event.ActionEvent;
+/*     */ import java.awt.event.ActionListener;
+/*     */ import javax.swing.BorderFactory;
+/*     */ import javax.swing.GroupLayout;
+/*     */ import javax.swing.GroupLayout.Alignment;
+/*     */ import javax.swing.GroupLayout.ParallelGroup;
+/*     */ import javax.swing.GroupLayout.SequentialGroup;
+/*     */ import javax.swing.JButton;
+/*     */ import javax.swing.JOptionPane;
+/*     */ import javax.swing.JPanel;
+/*     */ import javax.swing.JScrollPane;
+/*     */ import org.jhrcore.client.CommUtil;
+/*     */ import org.jhrcore.entity.salary.ValidateSQLResult;
+/*     */ import org.jhrcore.msg.CommMsg;
+/*     */ import org.jhrcore.ui.BeanPanel;
+/*     */ import org.jhrcore.ui.ModelFrame;
+/*     */ import org.jhrcore.util.MsgUtil;
+/*     */ 
+/*     */ 
+/*     */ public class EditBeanPanel
+/*     */   extends JPanel
+/*     */ {
+/*  26 */   private BeanPanel beanPanel = new BeanPanel();
+/*     */   private Object curObj;
+/*     */   private JPanel bPanel;
+/*     */   
+/*  30 */   public EditBeanPanel() { initComponents();
+/*  31 */     initOthers();
+/*  32 */     setupEvents();
+/*     */   }
+/*     */   
+/*     */   public EditBeanPanel(Object obj) {
+/*  36 */     initComponents();
+/*  37 */     this.curObj = obj;
+/*  38 */     initOthers();
+/*  39 */     setupEvents();
+/*     */   }
+/*     */   
+/*     */   private void initOthers() {
+/*  43 */     this.bPanel.add(new JScrollPane(this.beanPanel), "Center");
+/*  44 */     this.beanPanel.setBean(this.curObj);
+/*  45 */     this.beanPanel.setEditable(true);
+/*  46 */     this.beanPanel.bind();
+/*     */   }
+/*     */   
+/*     */   private void setupEvents()
+/*     */   {
+/*  51 */     this.btnSave.addActionListener(new ActionListener()
+/*     */     {
+/*     */       public void actionPerformed(ActionEvent e)
+/*     */       {
+/*  55 */         ValidateSQLResult result = CommUtil.updateEntity(EditBeanPanel.this.curObj);
+/*  56 */         if (result.getResult() == 0) {
+/*  57 */           MsgUtil.showInfoMsg(CommMsg.SAVESUCCESS_MESSAGE);
+/*  58 */           ModelFrame.close((ModelFrame)JOptionPane.getFrameForComponent(EditBeanPanel.this.btnClose));
+/*     */         } else {
+/*  60 */           MsgUtil.showHRSaveErrorMsg(result);
+/*     */         }
+/*     */       }
+/*  63 */     });
+/*  64 */     this.btnClose.addActionListener(new ActionListener()
+/*     */     {
+/*     */       public void actionPerformed(ActionEvent e)
+/*     */       {
+/*  68 */         ModelFrame.close((ModelFrame)JOptionPane.getFrameForComponent(EditBeanPanel.this.btnClose));
+/*     */       }
+/*     */     });
+/*     */   }
+/*     */   
+/*     */ 
+/*     */ 
+/*     */   private JButton btnClose;
+/*     */   
+/*     */ 
+/*     */   private JButton btnSave;
+/*     */   
+/*     */   private void initComponents()
+/*     */   {
+/*  82 */     this.bPanel = new JPanel();
+/*  83 */     this.btnSave = new JButton();
+/*  84 */     this.btnClose = new JButton();
+/*     */     
+/*  86 */     this.bPanel.setBorder(BorderFactory.createTitledBorder("基本信息"));
+/*  87 */     this.bPanel.setLayout(new BorderLayout());
+/*     */     
+/*  89 */     this.btnSave.setText("保存");
+/*     */     
+/*  91 */     this.btnClose.setText("关闭");
+/*     */     
+/*  93 */     GroupLayout layout = new GroupLayout(this);
+/*  94 */     setLayout(layout);
+/*  95 */     layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(this.bPanel, -1, -1, 32767).addGroup(layout.createSequentialGroup().addContainerGap(213, 32767).addComponent(this.btnSave).addGap(33, 33, 33).addComponent(this.btnClose).addGap(67, 67, 67)));
+/*     */     
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ 
+/*     */ 
+/* 105 */     layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(layout.createSequentialGroup().addComponent(this.bPanel, -1, 278, 32767).addGap(18, 18, 18).addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE).addComponent(this.btnSave).addComponent(this.btnClose)).addContainerGap()));
+/*     */   }
+/*     */ }
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import org.jhrcore.client.CommUtil;
-import org.jhrcore.entity.salary.ValidateSQLResult;
-import org.jhrcore.msg.CommMsg;
-import org.jhrcore.ui.BeanPanel;
-import org.jhrcore.ui.ModelFrame;
-import org.jhrcore.util.MsgUtil;
-
-/**
- *
- * @author Administrator
- */
-public class EditBeanPanel extends javax.swing.JPanel {
-
-    private BeanPanel beanPanel = new BeanPanel();
-    private Object curObj;
-
-    public EditBeanPanel() {
-        initComponents();
-        initOthers();
-        setupEvents();
-    }
-    
-    public EditBeanPanel(Object obj) {
-        initComponents();
-        this.curObj = obj;
-        initOthers();
-        setupEvents();
-    }
-
-    private void initOthers() {
-        bPanel.add(new JScrollPane(beanPanel), BorderLayout.CENTER);
-        beanPanel.setBean(curObj);
-        beanPanel.setEditable(true);
-        beanPanel.bind();
-        
-    }
-
-    private void setupEvents() {
-        btnSave.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ValidateSQLResult result = CommUtil.updateEntity(curObj);
-                if (result.getResult() == 0) {
-                    MsgUtil.showInfoMsg(CommMsg.SAVESUCCESS_MESSAGE);
-                    ModelFrame.close((ModelFrame) JOptionPane.getFrameForComponent(btnClose));
-                } else {
-                    MsgUtil.showHRSaveErrorMsg(result);
-                }
-            }
-        });
-        btnClose.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ModelFrame.close((ModelFrame) JOptionPane.getFrameForComponent(btnClose));
-            }
-        });
-    }
-
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-
-        bPanel = new javax.swing.JPanel();
-        btnSave = new javax.swing.JButton();
-        btnClose = new javax.swing.JButton();
-
-        bPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("基本信息"));
-        bPanel.setLayout(new java.awt.BorderLayout());
-
-        btnSave.setText("保存");
-
-        btnClose.setText("关闭");
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(bPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(213, Short.MAX_VALUE)
-                .addComponent(btnSave)
-                .addGap(33, 33, 33)
-                .addComponent(btnClose)
-                .addGap(67, 67, 67))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(bPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSave)
-                    .addComponent(btnClose))
-                .addContainerGap())
-        );
-    }// </editor-fold>//GEN-END:initComponents
-
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel bPanel;
-    private javax.swing.JButton btnClose;
-    private javax.swing.JButton btnSave;
-    // End of variables declaration//GEN-END:variables
-}
